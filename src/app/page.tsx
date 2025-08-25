@@ -25,13 +25,13 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD4Ig_ZFmcCEygIbCfm3YpJq6IixKmVLj0",
-  authDomain: "projeto-teste-meddeck.firebaseapp.com",
-  projectId: "projeto-teste-meddeck",
-  storageBucket: "projeto-teste-meddeck.firebasestorage.app",
-  messagingSenderId: "899323743894",
-  appId: "1:899323743894:web:4445a862307432a7dc7cb7",
-  measurementId: "G-MFB8CZ2MG2",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
