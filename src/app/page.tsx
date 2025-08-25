@@ -40,15 +40,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Configuração do emulator (apenas em desenvolvimento)
-if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-  // Conectar aos emulators apenas se estivermos em localhost
-  try {
-    connectAuthEmulator(auth, "http://127.0.0.1:9099");
-    connectFirestoreEmulator(db, "127.0.0.1", 8080);
-    console.log("Conectado aos emulators do Firebase");
-  } catch (error) {
-    console.log("Emulators já conectados ou não disponíveis");
-  }
+if (process.env.NEXT_PUBLIC_USE_EMULATOR === "true") {
+  connectAuthEmulator(auth, "http://127.0.0.1:9099");
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
 }
 
 interface FormData {
