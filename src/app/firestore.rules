@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para a coleção de formulários
+    match /formularios/{document} {
+      // Permitir leitura e escrita apenas se o usuário estiver autenticado
+      // e se o documento pertence ao usuário logado
+      allow read, write: if request.auth != null 
+        && request.auth.uid == resource.data.userId;
+      
+      // Permitir criação se o usuário estiver autenticado
+      // e se está criando um documento com seu próprio userId
+      allow create: if request.auth != null 
+        && request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Negar acesso a todas as outras coleções por padrão
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

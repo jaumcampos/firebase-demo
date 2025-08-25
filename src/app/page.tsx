@@ -12,6 +12,7 @@ import {
   where,
   orderBy,
   Timestamp,
+  connectFirestoreEmulator,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -20,6 +21,7 @@ import {
   onAuthStateChanged,
   signOut,
   User,
+  connectAuthEmulator,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -36,6 +38,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Configuração do emulator (apenas em desenvolvimento)
+if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+  // Conectar aos emulators apenas se estivermos em localhost
+  try {
+    connectAuthEmulator(auth, "http://127.0.0.1:9099");
+    connectFirestoreEmulator(db, "127.0.0.1", 8080);
+    console.log("Conectado aos emulators do Firebase");
+  } catch (error) {
+    console.log("Emulators já conectados ou não disponíveis");
+  }
+}
 
 interface FormData {
   nome: string;
@@ -254,13 +268,14 @@ export default function Home() {
 
     try {
       setLoading(true);
-      const q = query(
+
+      // Query simplificada - primeiro busca todos do usuário
+      const userQuery = query(
         collection(db, "formularios"),
-        where("userId", "==", user.uid),
-        orderBy("createdAt", "desc")
+        where("userId", "==", user.uid)
       );
 
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(userQuery);
       const documents: SavedDocument[] = [];
 
       querySnapshot.forEach((doc) => {
@@ -270,8 +285,16 @@ export default function Home() {
         });
       });
 
+      // Ordenar no lado do cliente por createdAt (mais recente primeiro)
+      documents.sort((a, b) => {
+        const aTime = a.createdAt?.toMillis() || 0;
+        const bTime = b.createdAt?.toMillis() || 0;
+        return bTime - aTime;
+      });
+
       setSavedDocuments(documents);
       setShowDocuments(true);
+      console.log(`Carregados ${documents.length} documentos`);
     } catch (error: any) {
       console.error("Erro ao carregar documentos: ", error);
       setError("Erro ao carregar documentos: " + error.message);

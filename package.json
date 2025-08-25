@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:emulators:export": "firebase emulators:export ./emulator-data",
+    "firebase:emulators:import": "firebase emulators:start --import ./emulator-data",
+    "dev:emulator": "concurrently \"firebase emulators:start\" \"next dev\"",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules",
+    "firebase:deploy:indexes": "firebase deploy --only firestore:indexes"
   },
   "dependencies": {
     "firebase": "^12.1.0",
@@ -19,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
